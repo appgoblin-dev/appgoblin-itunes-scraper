@@ -30,8 +30,8 @@ class AppStoreScraper:
 		Retrieve suggested app IDs for search query
 
 		:param str term:  Search query
-		:param int num:  Amount of items to return per page, default 50
-		:param int page:  Amount of pages to return
+		:param int|None num:  Amount of items to return per page, default 50
+		:param int|None page:  Amount of pages to return
 		:param str country:  Two-letter country code of store to search in,
 		                     default 'nl'
 		:param str lang:  Language code to search with, default 'nl'
@@ -113,6 +113,7 @@ class AppStoreScraper:
 
 		:return list[dict]:  List of Apps linked to developer
 		"""
+		country = country.lower()
 		url = "https://itunes.apple.com/lookup?id=%s&country=%s&entity=software" % (developer_id, country)
 
 		try:

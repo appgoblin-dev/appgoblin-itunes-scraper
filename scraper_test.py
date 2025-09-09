@@ -48,3 +48,19 @@ def test_country_code_does_not_exist():
     scraper = AppStoreScraper()
     with pytest.raises(AppStoreException, match="Country code not found for XZ"):
         scraper.get_store_id_for_country('xz')
+
+def test_query_multiple_pages():
+    query = "game"
+    scraper = AppStoreScraper()
+    results = set()
+    for page in range(1,4):
+        page_results = scraper.get_app_ids_for_query(query, country="us", lang="en", page=page)
+        if page_results:
+            [results.add(x) for x in page_results]
+            assert len(results) > (page-1)*50
+    print(f"Total results for query {query}: {len(results)}")
+
+def test_get_app_ids_for_collection():
+    scraper = AppStoreScraper()
+    results = scraper.get_app_ids_for_collection(AppStoreCollections.TOP_FREE_IOS, country="us", lang="en")
+    assert len(results) > 0
