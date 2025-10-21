@@ -57,7 +57,10 @@ class AppStoreScraper:
 		}
 
 		try:
-			result = requests.get(url, headers=headers, timeout=timeout).json()
+			with requests.get(url, headers=headers, timeout=(10, 30) if timeout is None else timeout, stream=True) as r:
+				r.raise_for_status()
+				content = r.content
+				result = json.loads(content)
 		except ConnectionError as ce:
 			raise AppStoreException("Cannot connect to store: {0}".format(str(ce)))
 		except json.JSONDecodeError:
@@ -95,7 +98,10 @@ class AppStoreScraper:
 
 
 		try:
-			result = requests.get(url, timeout=timeout).json()
+			with requests.get(url, timeout=(10, 30) if timeout is None else timeout, stream=True) as r:
+				r.raise_for_status()
+				content = r.content
+				result = json.loads(content)
 		except json.JSONDecodeError:
 			raise AppStoreException("Could not parse app store response")
 
@@ -117,7 +123,10 @@ class AppStoreScraper:
 		url = "https://itunes.apple.com/lookup?id=%s&country=%s&entity=software" % (developer_id, country)
 
 		try:
-			result = requests.get(url, timeout=timeout).json()
+			with requests.get(url, timeout=(10, 30) if timeout is None else timeout, stream=True) as r:
+				r.raise_for_status()
+				content = r.content
+				result = json.loads(content)
 		except json.JSONDecodeError:
 			raise AppStoreException("Could not parse app store response")
 
@@ -171,7 +180,9 @@ class AppStoreScraper:
 			"Accept-Language": lang
 		}
 
-		result = requests.get(url, headers=headers, timeout=timeout).text
+		with requests.get(url, headers=headers, timeout=(10, 30) if timeout is None else timeout, stream=True) as r:
+			r.raise_for_status()
+			result = r.text
 		if "customersAlsoBoughtApps" not in result:
 			return []
 
@@ -227,13 +238,19 @@ class AppStoreScraper:
 		try:
 			if sleep is not None:
 				time.sleep(sleep)
-			result = requests.get(url, timeout=timeout).json()
+			with requests.get(url, timeout=(10, 30) if timeout is None else timeout, stream=True) as r:
+				r.raise_for_status()
+				content = r.content
+				result = json.loads(content)
 		except Exception:
 			try:
 				# handle the retry here.
 				# Take an extra sleep as back off and then retry the URL once.
 				time.sleep(2)
-				result = requests.get(url, timeout=timeout).json()
+				with requests.get(url, timeout=(10, 30) if timeout is None else timeout, stream=True) as r:
+					r.raise_for_status()
+					content = r.content
+					result = json.loads(content)
 			except Exception:
 				raise AppStoreException("Could not parse app store response for ID %s" % app_id)
 
@@ -334,13 +351,17 @@ class AppStoreScraper:
 			try:
 				if sleep is not None:
 					time.sleep(sleep)
-				result = requests.get(url, headers=headers, timeout=timeout).text
+				with requests.get(url, headers=headers, timeout=(10, 30) if timeout is None else timeout, stream=True) as r:
+					r.raise_for_status()
+					result = r.text
 			except Exception:
 				try:
 					# handle the retry here.
 					# Take an extra sleep as back off and then retry the URL once.
 					time.sleep(2)
-					result = requests.get(url, headers=headers, timeout=timeout).text
+					with requests.get(url, headers=headers, timeout=(10, 30) if timeout is None else timeout, stream=True) as r:
+						r.raise_for_status()
+						result = r.text
 				except Exception:
 					raise AppStoreException("Could not parse app store rating response for ID %s" % app_id)
 
