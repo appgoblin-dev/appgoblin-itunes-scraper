@@ -57,7 +57,7 @@ class AppStoreScraper:
 		}
 
 		try:
-			with requests.get(url, headers=headers, timeout=(10, 30) if timeout is None else timeout, stream=True) as r:
+			with requests.get(url, headers=headers, timeout=(10, 30) if timeout is None else (timeout,timeout), stream=True) as r:
 				r.raise_for_status()
 				content = r.content
 				result = json.loads(content)
@@ -98,7 +98,7 @@ class AppStoreScraper:
 
 
 		try:
-			with requests.get(url, timeout=(10, 30) if timeout is None else timeout, stream=True) as r:
+			with requests.get(url, timeout=(10, 30) if timeout is None else (timeout,timeout), stream=True) as r:
 				r.raise_for_status()
 				content = r.content
 				result = json.loads(content)
@@ -123,7 +123,7 @@ class AppStoreScraper:
 		url = "https://itunes.apple.com/lookup?id=%s&country=%s&entity=software" % (developer_id, country)
 
 		try:
-			with requests.get(url, timeout=(10, 30) if timeout is None else timeout, stream=True) as r:
+			with requests.get(url, timeout=(10, 30) if timeout is None else (timeout,timeout), stream=True) as r:
 				r.raise_for_status()
 				content = r.content
 				result = json.loads(content)
@@ -180,7 +180,7 @@ class AppStoreScraper:
 			"Accept-Language": lang
 		}
 
-		with requests.get(url, headers=headers, timeout=(10, 30) if timeout is None else timeout, stream=True) as r:
+		with requests.get(url, headers=headers, timeout=(10, 30) if timeout is None else (timeout,timeout), stream=True) as r:
 			r.raise_for_status()
 			result = r.text
 		if "customersAlsoBoughtApps" not in result:
@@ -238,7 +238,7 @@ class AppStoreScraper:
 		try:
 			if sleep is not None:
 				time.sleep(sleep)
-			with requests.get(url, timeout=(10, 30) if timeout is None else timeout, stream=True) as r:
+			with requests.get(url, timeout=(10, 30) if timeout is None else (timeout, timeout), stream=True) as r:
 				r.raise_for_status()
 				content = r.content
 				result = json.loads(content)
@@ -247,7 +247,7 @@ class AppStoreScraper:
 				# handle the retry here.
 				# Take an extra sleep as back off and then retry the URL once.
 				time.sleep(2)
-				with requests.get(url, timeout=(10, 30) if timeout is None else timeout, stream=True) as r:
+				with requests.get(url, timeout=(10, 30) if timeout is None else (timeout,timeout), stream=True) as r:
 					r.raise_for_status()
 					content = r.content
 					result = json.loads(content)
@@ -351,7 +351,7 @@ class AppStoreScraper:
 			try:
 				if sleep is not None:
 					time.sleep(sleep)
-				with requests.get(url, headers=headers, timeout=(10, 30) if timeout is None else timeout, stream=True) as r:
+				with requests.get(url, headers=headers, timeout=(10, 30) if timeout is None else (timeout,timeout), stream=True) as r:
 					r.raise_for_status()
 					result = r.text
 			except Exception:
