@@ -1,3 +1,4 @@
+from appgoblin_itunes_scraper.exceptions import NotFoundError
 from appgoblin_itunes_scraper.scraper import AppStoreScraper
 from appgoblin_itunes_scraper.util import (
     AppStoreException,
@@ -24,7 +25,7 @@ def test_no_term_gives_exception():
 
 def test_no_invalid_id_gives_exception():
     scraper = AppStoreScraper()
-    with pytest.raises(AppStoreException, match="No app found with ID 872"):
+    with pytest.raises(NotFoundError, match="No app found with ID 872"):
         scraper.get_app_details("872")
 
 

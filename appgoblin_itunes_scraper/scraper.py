@@ -11,12 +11,15 @@ import os
 from datetime import datetime
 
 from urllib.parse import quote_plus
-from appgoblin_itunes_scraper.util import (
+from appgoblin_itunes_scraper.exceptions import (
     AppStoreException,
+    NotFoundError,
+    TemporaryBlockException,
+)
+from appgoblin_itunes_scraper.util import (
     AppStoreCollections,
     AppStoreMarkets,
     COUNTRIES,
-    TemporaryBlockException,
 )
 
 
@@ -333,7 +336,7 @@ class AppStoreScraper:
         try:
             app = result["results"][0]
         except (KeyError, IndexError):
-            raise AppStoreException("No app found with ID %s" % app_id)
+            raise NotFoundError("No app found with ID %s" % app_id)
 
         if add_ratings:
             try:

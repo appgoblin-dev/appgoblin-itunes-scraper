@@ -2,6 +2,8 @@
 App Store Scraper utility classes
 """
 
+from appgoblin_itunes_scraper.exceptions import AppStoreException
+
 
 class AppStoreUtils:
     """
@@ -243,20 +245,6 @@ class AppStoreMarkets:
     VE = 143502
     VN = 143471
     YE = 143571
-
-
-class AppStoreException(Exception):
-    """
-    Thrown when an error occurs in the App Store scraper
-    """
-
-    pass
-
-
-class TemporaryBlockException(AppStoreException):
-    """
-    Raised when the App Store temporarily blocks or rate-limits requests.
-    """
 
     pass
 
