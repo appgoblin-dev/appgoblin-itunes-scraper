@@ -313,46 +313,15 @@ class AppStoreScraper:
                 r.raise_for_status()
                 result = r.json()
         except Timeout:
-            try:
-                # handle the retry here.
-                # Take an extra sleep as back off and then retry the URL once.
-                time.sleep(2)
-                with requests.get(url, timeout=request_timeout) as r:
-                    r.raise_for_status()
-                    result = r.json()
-            except (Timeout, RequestException, json.JSONDecodeError, ValueError):
-                raise AppStoreException(
-                    "Could not fetch app store response for ID %s within timeout"
-                    % app_id
-                )
+            raise AppStoreException(
+                "Could not fetch app store response for ID %s within timeout" % app_id
+            )
         except requests.HTTPError as http_error:
-            try:
-                # handle the retry here.
-                # Take an extra sleep as back off and then retry the URL once.
-                time.sleep(2)
-                with requests.get(url, timeout=request_timeout) as r:
-                    r.raise_for_status()
-                    result = r.json()
-            except requests.HTTPError as retry_error:
-                raise AppStoreException(self._format_http_error(retry_error, app_id))
-            except (Timeout, RequestException, json.JSONDecodeError, ValueError):
-                raise AppStoreException(
-                    "Could not parse app store response for ID %s" % app_id
-                )
+            raise AppStoreException(self._format_http_error(http_error, app_id))
         except (RequestException, json.JSONDecodeError, ValueError):
-            try:
-                # handle the retry here.
-                # Take an extra sleep as back off and then retry the URL once.
-                time.sleep(2)
-                with requests.get(url, timeout=request_timeout) as r:
-                    r.raise_for_status()
-                    result = r.json()
-            except requests.HTTPError as retry_error:
-                raise AppStoreException(self._format_http_error(retry_error, app_id))
-            except (Timeout, RequestException, json.JSONDecodeError, ValueError):
-                raise AppStoreException(
-                    "Could not parse app store response for ID %s" % app_id
-                )
+            raise AppStoreException(
+                "Could not parse app store response for ID %s" % app_id
+            )
 
         try:
             app = result["results"][0]
@@ -486,21 +455,15 @@ class AppStoreScraper:
                 with requests.get(url, headers=headers, timeout=request_timeout) as r:
                     r.raise_for_status()
                     result = r.text
-            except (Timeout, RequestException):
-                try:
-                    # handle the retry here.
-                    # Take an extra sleep as back off and then retry the URL once.
-                    time.sleep(2)
-                    with requests.get(
-                        url, headers=headers, timeout=request_timeout
-                    ) as r:
-                        r.raise_for_status()
-                        result = r.text
-                except (Timeout, RequestException):
-                    raise AppStoreException(
-                        "Could not fetch app store rating response for ID %s within timeout"
-                        % app_id
-                    )
+            except Timeout:
+                raise AppStoreException(
+                    "Could not fetch app store rating response for ID %s within timeout"
+                    % app_id
+                )
+            except RequestException:
+                raise AppStoreException(
+                    "Could not fetch app store rating response for ID %s" % app_id
+                )
 
             ratings = self._parse_rating(result)
 
