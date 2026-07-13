@@ -9,6 +9,8 @@ from itunes_app_scraper.util import (
 import json
 import pytest
 import os
+import requests
+import itunes_app_scraper.scraper as scraper_module
 
 
 def test_term_no_exception():
@@ -122,3 +124,32 @@ def test_get_multiple_app_details_forwards_timeout(monkeypatch):
     results = list(scraper.get_multiple_app_details([999], timeout=7))
     assert results == [{"trackId": 999}]
     assert captured["timeout"] == 7
+
+
+def test_get_app_details_reports_http_429(monkeypatch):
+    scraper = AppStoreScraper()
+
+    class FakeResponse:
+        def __init__(self):
+            self.status_code = 429
+            self.reason = "Too Many Requests"
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, tb):
+            return False
+
+        def raise_for_status(self):
+            raise requests.HTTPError(response=self)
+
+        def json(self):
+            raise AssertionError("JSON parsing should not be attempted on HTTP errors")
+
+    def fake_get(*args, **kwargs):
+        return FakeResponse()
+
+    monkeypatch.setattr(scraper_module.requests, "get", fake_get)
+
+    with pytest.raises(AppStoreException, match="429|rate limit"):
+        scraper.get_app_details("1625453623")

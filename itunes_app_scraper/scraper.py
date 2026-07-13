@@ -235,6 +235,19 @@ class AppStoreScraper:
 
         return ids
 
+    def _format_http_error(self, error, app_id):
+        response = getattr(error, "response", None)
+        status_code = getattr(response, "status_code", None)
+        reason = getattr(response, "reason", None)
+
+        if status_code is not None:
+            detail = "HTTP %s" % status_code
+            if reason:
+                detail = "%s %s" % (detail, reason)
+            return "App Store returned %s for ID %s" % (detail, app_id)
+
+        return "Could not fetch app store response for ID %s" % app_id
+
     def get_app_details(
         self,
         app_id,
@@ -312,6 +325,20 @@ class AppStoreScraper:
                     "Could not fetch app store response for ID %s within timeout"
                     % app_id
                 )
+        except requests.HTTPError as http_error:
+            try:
+                # handle the retry here.
+                # Take an extra sleep as back off and then retry the URL once.
+                time.sleep(2)
+                with requests.get(url, timeout=request_timeout) as r:
+                    r.raise_for_status()
+                    result = r.json()
+            except requests.HTTPError as retry_error:
+                raise AppStoreException(self._format_http_error(retry_error, app_id))
+            except (Timeout, RequestException, json.JSONDecodeError, ValueError):
+                raise AppStoreException(
+                    "Could not parse app store response for ID %s" % app_id
+                )
         except (RequestException, json.JSONDecodeError, ValueError):
             try:
                 # handle the retry here.
@@ -320,6 +347,8 @@ class AppStoreScraper:
                 with requests.get(url, timeout=request_timeout) as r:
                     r.raise_for_status()
                     result = r.json()
+            except requests.HTTPError as retry_error:
+                raise AppStoreException(self._format_http_error(retry_error, app_id))
             except (Timeout, RequestException, json.JSONDecodeError, ValueError):
                 raise AppStoreException(
                     "Could not parse app store response for ID %s" % app_id
