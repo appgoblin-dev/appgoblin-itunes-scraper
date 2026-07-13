@@ -1,7 +1,5 @@
 #!/bin/bash
 
-#Script to run both test frameworks
+# Script to run the test suite
 
 pytest
-
-behave
