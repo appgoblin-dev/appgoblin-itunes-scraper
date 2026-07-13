@@ -1,0 +1,46 @@
+[project]
+name = "appgoblin-itunes-scraper"
+version = "0.9.6"
+description = "A lightweight iTunes App Store scraper hard forked from the Digital Methods Initiative project"
+authors = [
+    { name = "AppGoblin" },
+]
+license = { text = "MIT" }
+keywords = ["itunes", "app-store", "scraper", "appgoblin"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Utilities",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+]
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = ["requests"]
+
+[project.urls]
+Homepage = "https://github.com/appgoblin-dev/appgoblin-itunes-scraper"
+Repository = "https://github.com/appgoblin-dev/appgoblin-itunes-scraper"
+Issues = "https://github.com/appgoblin-dev/appgoblin-itunes-scraper/issues"
+
+[project.optional-dependencies]
+dev = [
+    "black>=24.0.0",
+    "isort>=5.12.0",
+    "pre-commit>=3.0.0",
+    "pytest>=8.0.0",
+    "ruff>=0.3.0",
+]
+
+[tool.setuptools.packages.find]
+include = ["itunes_app_scraper*"]
+
+[build-system]
+requires = ["setuptools>=69.0", "wheel"]
+build-backend = "setuptools.build_meta"

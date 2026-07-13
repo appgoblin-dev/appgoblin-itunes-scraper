@@ -2,11 +2,8 @@ from itunes_app_scraper.scraper import AppStoreScraper
 from itunes_app_scraper.util import (
     AppStoreException,
     AppStoreCollections,
-    AppStoreCategories,
-    AppStoreUtils,
 )
 
-import json
 import pytest
 import os
 import requests

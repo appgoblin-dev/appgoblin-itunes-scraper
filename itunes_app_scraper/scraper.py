@@ -14,7 +14,6 @@ from urllib.parse import quote_plus
 from itunes_app_scraper.util import (
     AppStoreException,
     AppStoreCollections,
-    AppStoreCategories,
     AppStoreMarkets,
     COUNTRIES,
 )
