@@ -1,6 +1,6 @@
 [project]
 name = "appgoblin-itunes-scraper"
-version = "0.9.7"
+version = "0.0.6"
 description = "A lightweight iTunes App Store scraper hard forked from the Digital Methods Initiative project"
 authors = [{ name = "James O'Claire", email = "james@appgoblin.info" }]
 license = { text = "MIT" }
