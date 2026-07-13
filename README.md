@@ -15,7 +15,7 @@ The following scrapes app details about all apps similar to the first result
 for the 'fortnite' search query:
 
 ```
-from itunes_app_scraper.scraper import AppStoreScraper
+from appgoblin_itunes_scraper.scraper import AppStoreScraper
 
 scraper = AppStoreScraper()
 results = scraper.get_app_ids_for_query("fortnite")

@@ -1,10 +1,8 @@
 [project]
 name = "appgoblin-itunes-scraper"
-version = "0.9.6"
+version = "0.9.7"
 description = "A lightweight iTunes App Store scraper hard forked from the Digital Methods Initiative project"
-authors = [
-    { name = "AppGoblin" },
-]
+authors = [{ name = "James O'Claire", email = "james@appgoblin.info" }]
 license = { text = "MIT" }
 keywords = ["itunes", "app-store", "scraper", "appgoblin"]
 classifiers = [
@@ -21,7 +19,7 @@ classifiers = [
     "Programming Language :: Python :: 3.14",
 ]
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.12"
 dependencies = ["requests"]
 
 [project.urls]
@@ -39,7 +37,7 @@ dev = [
 ]
 
 [tool.setuptools.packages.find]
-include = ["itunes_app_scraper*"]
+include = ["appgoblin_itunes_scraper*"]
 
 [build-system]
 requires = ["setuptools>=69.0", "wheel"]

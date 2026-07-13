@@ -1,5 +1,5 @@
-from itunes_app_scraper.scraper import AppStoreScraper
-from itunes_app_scraper.util import (
+from appgoblin_itunes_scraper.scraper import AppStoreScraper
+from appgoblin_itunes_scraper.util import (
     AppStoreException,
     AppStoreCollections,
 )
@@ -7,7 +7,7 @@ from itunes_app_scraper.util import (
 import pytest
 import os
 import requests
-import itunes_app_scraper.scraper as scraper_module
+import appgoblin_itunes_scraper.scraper as scraper_module
 
 
 def test_term_no_exception():

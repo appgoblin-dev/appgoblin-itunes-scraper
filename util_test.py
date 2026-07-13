@@ -1,4 +1,4 @@
-from itunes_app_scraper.util import (
+from appgoblin_itunes_scraper.util import (
     AppStoreCollections,
     AppStoreCategories,
     AppStoreUtils,

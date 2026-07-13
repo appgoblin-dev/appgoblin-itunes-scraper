@@ -1,4 +1,4 @@
-from itunes_app_scraper.scraper import AppStoreScraper
+from appgoblin_itunes_scraper.scraper import AppStoreScraper
 
 
 class ScraperSteps:
