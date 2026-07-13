@@ -253,6 +253,14 @@ class AppStoreException(Exception):
     pass
 
 
+class TemporaryBlockException(AppStoreException):
+    """
+    Raised when the App Store temporarily blocks or rate-limits requests.
+    """
+
+    pass
+
+
 COUNTRIES = [
     "ad",  # Andorra
     "at",  # Austria

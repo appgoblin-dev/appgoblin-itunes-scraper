@@ -16,6 +16,7 @@ from appgoblin_itunes_scraper.util import (
     AppStoreCollections,
     AppStoreMarkets,
     COUNTRIES,
+    TemporaryBlockException,
 )
 
 
@@ -247,6 +248,13 @@ class AppStoreScraper:
 
         return "Could not fetch app store response for ID %s" % app_id
 
+    def _raise_for_blocked_response(self, error, app_id):
+        response = getattr(error, "response", None)
+        status_code = getattr(response, "status_code", None)
+        if status_code in {403, 429}:
+            raise TemporaryBlockException(self._format_http_error(error, app_id))
+        raise AppStoreException(self._format_http_error(error, app_id))
+
     def get_app_details(
         self,
         app_id,
@@ -316,7 +324,7 @@ class AppStoreScraper:
                 "Could not fetch app store response for ID %s within timeout" % app_id
             )
         except requests.HTTPError as http_error:
-            raise AppStoreException(self._format_http_error(http_error, app_id))
+            self._raise_for_blocked_response(http_error, app_id)
         except (RequestException, json.JSONDecodeError, ValueError):
             raise AppStoreException(
                 "Could not parse app store response for ID %s" % app_id
@@ -459,6 +467,8 @@ class AppStoreScraper:
                     "Could not fetch app store rating response for ID %s within timeout"
                     % app_id
                 )
+            except requests.HTTPError as http_error:
+                self._raise_for_blocked_response(http_error, app_id)
             except RequestException:
                 raise AppStoreException(
                     "Could not fetch app store rating response for ID %s" % app_id
