@@ -1,4 +1,6 @@
-# iTunes App Store Scraper
+# AppGoblin iTunes App Store Scraper
+This project is a hard fork of [digitalmethodsinitiative/itunes-app-scraper](https://github.com/digitalmethodsinitiative/itunes-app-scraper), created in 2026 by AppGoblin for continued development and experimentation.
+
 This defines a lightweight Python class that can be used to scrape app 
 information from the iTunes App Store. It defines a couple of methods that can
 be used to get relevant app IDs given a set of parameters, and a couple of 
@@ -40,6 +42,6 @@ available and what their parameters are.
 
 
 ## License
-This scraper was developed by the 
-[Digital Methods Initiative](https://digitalmethods.net), and is distributed
-under the MIT license. See LICENSE for details.
+This scraper was originally developed by the 
+[Digital Methods Initiative](https://digitalmethods.net), and this hard fork is
+maintained by AppGoblin under the same MIT license. See LICENSE for details.
