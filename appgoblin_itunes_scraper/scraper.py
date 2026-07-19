@@ -38,7 +38,7 @@ class AppStoreScraper:
     """
 
     def get_app_ids_for_query(
-        self, term, num=50, page=1, country="nl", lang="nl", timeout=None
+        self, term, num=50, page=1, country="nl", lang="nl", timeout=None, proxies=None
     ):
         """
         Retrieve suggested app IDs for search query
@@ -50,6 +50,7 @@ class AppStoreScraper:
                              default 'nl'
         :param str lang:  Language code to search with, default 'nl'
         :param int timeout: Seconds to wait for response before stopping.
+        :param dict|None proxies: Optional proxy configuration to pass to requests.
 
         :return list:  List of App IDs returned for search query
         """
@@ -75,6 +76,7 @@ class AppStoreScraper:
                 url,
                 headers=headers,
                 timeout=(10, 30) if timeout is None else (timeout, timeout),
+                proxies=proxies,
             ) as r:
                 r.raise_for_status()
                 result = r.json()
@@ -91,7 +93,14 @@ class AppStoreScraper:
         return [app["id"] for app in result["bubbles"][0]["results"][:amount]]
 
     def get_app_ids_for_collection(
-        self, collection="", category="", num=50, country="nl", lang="", timeout=None
+        self,
+        collection="",
+        category="",
+        num=50,
+        country="nl",
+        lang="",
+        timeout=None,
+        proxies=None,
     ):
         """
         Retrieve app IDs in given App Store collection
@@ -107,6 +116,7 @@ class AppStoreScraper:
                              Defaults to 'nl'.
         :param str lang: Dummy argument for compatibility. Unused.
         :param int timeout: Seconds to wait for response before stopping.
+        :param dict|None proxies: Optional proxy configuration to pass to requests.
 
         :return:  List of App IDs in collection.
         """
@@ -124,6 +134,7 @@ class AppStoreScraper:
             with requests.get(
                 url,
                 timeout=(10, 30) if timeout is None else (timeout, timeout),
+                proxies=proxies,
             ) as r:
                 r.raise_for_status()
                 result = r.json()
@@ -132,7 +143,9 @@ class AppStoreScraper:
 
         return result["resultIds"]
 
-    def get_apps_for_developer(self, developer_id, country="nl", lang="", timeout=None):
+    def get_apps_for_developer(
+        self, developer_id, country="nl", lang="", timeout=None, proxies=None
+    ):
         """
         Retrieve Apps linked to given developer
 
@@ -141,6 +154,7 @@ class AppStoreScraper:
                              Defaults to 'nl'.
         :param str lang: Dummy argument for compatibility. Unused.
         :param int timeout: Seconds to wait for response before stopping.
+        :param dict|None proxies: Optional proxy configuration to pass to requests.
 
         :return list[dict]:  List of Apps linked to developer
         """
@@ -154,6 +168,7 @@ class AppStoreScraper:
             with requests.get(
                 url,
                 timeout=(10, 30) if timeout is None else (timeout, timeout),
+                proxies=proxies,
             ) as r:
                 r.raise_for_status()
                 result = r.json()
@@ -169,7 +184,7 @@ class AppStoreScraper:
             return []
 
     def get_app_ids_for_developer(
-        self, developer_id, country="nl", lang="", timeout=None
+        self, developer_id, country="nl", lang="", timeout=None, proxies=None
     ):
         """
         Retrieve App IDs linked to given developer
@@ -179,11 +194,12 @@ class AppStoreScraper:
                              Defaults to 'nl'.
         :param str lang: Dummy argument for compatibility. Unused.
         :param int timeout: Seconds to wait for response before stopping.
+        :param dict|None proxies: Optional proxy configuration to pass to requests.
 
         :return list:  List of App IDs linked to developer
         """
         apps = self.get_apps_for_developer(
-            developer_id, country=country, lang=lang, timeout=timeout
+            developer_id, country=country, lang=lang, timeout=timeout, proxies=proxies
         )
         if len(apps) == 0:
             return []
@@ -195,7 +211,7 @@ class AppStoreScraper:
         return app_ids
 
     def get_similar_app_ids_for_app(
-        self, app_id, country="nl", lang="nl", timeout=None
+        self, app_id, country="nl", lang="nl", timeout=None, proxies=None
     ):
         """
         Retrieve list of App IDs of apps similar to given app
@@ -209,6 +225,7 @@ class AppStoreScraper:
                              Defaults to 'nl'.
         :param str lang:  Language code to search with, default 'nl'
         :param int timeout: Seconds to wait for response before stopping.
+        :param dict|None proxies: Optional proxy configuration to pass to requests.
 
         :return list:  List of similar app IDs
         """
@@ -221,6 +238,7 @@ class AppStoreScraper:
             url,
             headers=headers,
             timeout=(10, 30) if timeout is None else (timeout, timeout),
+            proxies=proxies,
         ) as r:
             r.raise_for_status()
             result = r.text
@@ -268,6 +286,7 @@ class AppStoreScraper:
         sleep=None,
         force=False,
         timeout=None,
+        proxies=None,
     ):
         """
         Get app details for given app ID
@@ -288,6 +307,7 @@ class AppStoreScraper:
         :param bool force:  by-passes the server side caching by adding a timestamp
                             to the request (default is False)
         :param int timeout: Seconds to wait for response before stopping.
+        :param dict|None proxies: Optional proxy configuration to pass to requests.
 
         :return dict:  App details, as returned by the app store. The result is
                        not processed any further, unless `flatten` is True
@@ -319,7 +339,7 @@ class AppStoreScraper:
         try:
             if sleep is not None:
                 time.sleep(sleep)
-            with requests.get(url, timeout=request_timeout) as r:
+            with requests.get(url, timeout=request_timeout, proxies=proxies) as r:
                 r.raise_for_status()
                 result = r.json()
         except Timeout:
@@ -341,7 +361,7 @@ class AppStoreScraper:
         if add_ratings:
             try:
                 ratings = self.get_app_ratings(
-                    app_id, countries=country, timeout=timeout
+                    app_id, countries=country, timeout=timeout, proxies=proxies
                 )
                 app["user_ratings"] = ratings
             except AppStoreException:
@@ -378,6 +398,7 @@ class AppStoreScraper:
         sleep=1,
         force=False,
         timeout=None,
+        proxies=None,
     ):
         """
         Get app details for a list of app IDs
@@ -392,6 +413,7 @@ class AppStoreScraper:
         :param bool force:  by-passes the server side caching by adding a timestamp
                             to the request (default is False)
         :param int timeout: Seconds to wait for each app detail response before stopping.
+        :param dict|None proxies: Optional proxy configuration to pass to requests.
 
         :return generator:  A list (via a generator) of app details
         """
@@ -405,6 +427,7 @@ class AppStoreScraper:
                     sleep=sleep,
                     force=force,
                     timeout=timeout,
+                    proxies=proxies,
                 )
             except AppStoreException as ase:
                 self._log_error(country, str(ase))
@@ -425,7 +448,9 @@ class AppStoreScraper:
         else:
             raise AppStoreException("Country code not found for {0}".format(country))
 
-    def get_app_ratings(self, app_id, countries=None, sleep=1, timeout=None):
+    def get_app_ratings(
+        self, app_id, countries=None, sleep=1, timeout=None, proxies=None
+    ):
         """
         Get app ratings for given app ID
 
@@ -438,6 +463,7 @@ class AppStoreScraper:
                                           temporary blocked if there are many requests in a
                                           short time. Defaults to 1.
         :param int timeout: Seconds to wait for response before stopping.
+        :param dict|None proxies: Optional proxy configuration to pass to requests.
 
         :return dict:  App ratings, as scraped from the app store.
         """
@@ -462,7 +488,9 @@ class AppStoreScraper:
             try:
                 if sleep is not None:
                     time.sleep(sleep)
-                with requests.get(url, headers=headers, timeout=request_timeout) as r:
+                with requests.get(
+                    url, headers=headers, timeout=request_timeout, proxies=proxies
+                ) as r:
                     r.raise_for_status()
                     result = r.text
             except Timeout:
