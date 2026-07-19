@@ -2,8 +2,6 @@
 App Store Scraper utility classes
 """
 
-from appgoblin_itunes_scraper.exceptions import AppStoreException
-
 
 class AppStoreUtils:
     """
